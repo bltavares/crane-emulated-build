@@ -1,0 +1,18 @@
+name: Darwin
+on:
+  push:
+  pull_request:
+jobs:
+  check:
+    # runs-on: macos-latest
+    runs-on: macos-14 # m1 runner
+    strategy:
+      matrix:
+        system: [x86_64, aarch64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: "extra-platforms = ${{ matrix.system }}-darwin"
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - run: nix flake check --system ${{ matrix.system }}-darwin --accept-flake-config
