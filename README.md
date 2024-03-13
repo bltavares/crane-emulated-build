@@ -285,3 +285,17 @@ The error can be seen on [Github Actions](https://github.com/bltavares/banana/ac
 > ---
 ```
 </details>
+
+
+## References 
+
+So far, these are some links that helpmed me figure out the emulated toolchain process, but not cover all of the issues yet.
+
+- https://discourse.nixos.org/t/nix-github-actions-aarch64/11034/5?u=bltavares&utm_source=pocket_saves
+- https://discourse.nixos.org/t/best-practices-for-building-aarch64-linux-pkgs-on-a-x86-64-linux-system/1697/2?u=bltavares
+- https://discourse.nixos.org/t/how-do-i-get-my-aarch64-linux-machine-to-build-x86-64-linux-extra-platforms-doesnt-seem-to-work/38106/12?u=bltavares
+- https://github.com/nix-community/naersk/issues/181?utm_source=pocket_saves#issuecomment-874352470
+- https://github.com/numtide/system-manager/pull/44/files
+- https://matklad.github.io//2022/03/14/rpath-or-why-lld-doesnt-work-on-nixos.html?utm_source=pocket_saves
+- https://github.com/pop-os/xdg-desktop-portal-cosmic/pull/10/files
+- https://github.com/mirkolenz/flocken?tab=readme-ov-file#flockenlegacypackagessystemmkdockermanifest
