@@ -29,20 +29,27 @@ This error prevents using `cargo-nextest` with Github Actions, as it only offers
     - Except for NixOS `qemu` emulation, that can't link to the `rust-std` results
     - It seems that the resulting `symbols.so` from `rustc` is partially broken [ref [#1](https://github.com/rust-lang/cargo/issues/8239?utm_source=pocket_saves) [#2](https://github.com/rust-lang/rust/pull/111351?utm_source=pocket_saves)]
     - Using `rustc -C save-temps main.rs` allows inspecting of `symbols.so`, which reports the right arch under `file`, but fails to be parsed by `nm` or `objdump`.
-    - TODO :soon:: Open an isso on https://github.com/nix-community/fenix/
+    - TODO :soon:: Open an isso on https://github.com/nixos/nixpkgs
 
-## Generating the project
+## Non Flake mode (simplest)
 
-This project was generated using [crane](https://crane.dev) quick-start template. No additional changes were applied either on `.nix` or the Rust project.
+Ensure you have an emulated cross-architecture `binfmt_misc` on your host. Then build a empty `rust` file.
 
-```bash
-nix flake init -t github:ipetkov/crane#quick-start
-nix flake check
+
+```sh
+if [[ $(uname -m) == "arm64" || $(uname -m) == "aarch64" ]]; then
+    emulated="x86_64-linux";
+else
+    emulated="aarch64-linux";
+fi
+
+nix-build non-flake.nix --argstr system $emulated
 ```
 
-## Environment table
 
-### `nix run` or `nix build`
+### Environment table
+
+#### `nix-build` 
 
 Almost all environment using the host `qemu-static` emulation will produce binaries using the emulated toolchain.
 
@@ -57,7 +64,35 @@ The exception is running NixOS as the host (eg: VM), where ~~(for some reason to
 | Linux (Ubuntu) | aarch64 (docker)    | x86_64 (host qemu)         | Yes ✅  |
 | Linux (Ubuntu) | x86_64 (docker)     | aarch64 (host qemu)        | Yes ✅  |
 
-### `craneLib.cargoTest`
+## Crane build (flake/complete)
+
+### Generating the project
+
+This project was generated using [crane](https://crane.dev) quick-start template. No additional changes were applied either on `.nix` or the Rust project.
+
+```bash
+nix flake init -t github:ipetkov/crane#quick-start
+nix flake check
+```
+
+### Environment table
+
+#### `nix run` or `nix build`
+
+Almost all environment using the host `qemu-static` emulation will produce binaries using the emulated toolchain.
+
+The exception is running NixOS as the host (eg: VM), where ~~(for some reason too arcane for me)~~ will break the `cc` on the emulated toolchain with [unrecognized symbol formats](#nixos-vm-errors).
+
+| System         | Architecture        | Target                     | Works? |
+| -------------- | ------------------- | -------------------------- | ------ |
+| Darwin         | aarch64 (m1)        | x86_64 (rosetta)           | Yes ✅  |
+| Linux (NixOS)  | amd64 (proxmox/lxc) | aarch64 (host qemu-static) | Yes ✅  |
+| Linux (NixOS)  | amd64 (proxmox/vm)  | aarch64 (qemu)             | No  ❌  |
+| Linux (NixOS)  | aarch64 (docker)    | x86_64 (host qemu)         | Yes ✅  |
+| Linux (Ubuntu) | aarch64 (docker)    | x86_64 (host qemu)         | Yes ✅  |
+| Linux (Ubuntu) | x86_64 (docker)     | aarch64 (host qemu)        | Yes ✅  |
+
+#### `craneLib.cargoTest`
 
 Almost all environment using the host `qemu-static` emulation will produce binaries using the emulated toolchain.
 
@@ -74,7 +109,7 @@ The exception is running NixOS as the host (eg: VM), where ~~(for some reason to
 | Linux (Ubuntu) | aarch64 (docker)    | x86_64 (host qemu)         | Yes ✅  |
 | Linux (Ubuntu) | x86_64 (docker)     | aarch64 (host qemu)        | Yes ✅  |
 
-### `craneLib.cargoNextest`
+#### `craneLib.cargoNextest`
 
 ❌ This is the main point of investigation, as `cargo nextest` has some nice speedup features, but it's causing problems when running in an emulated environment.
 
