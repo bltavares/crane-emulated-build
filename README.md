@@ -20,12 +20,16 @@ This error prevents using `cargo-nextest` with Github Actions, as it only offers
 
 ## What I've learned so far
 
-
 1. The intermediate artifacts of `cargo nextest` generate valid binaries with the emulated toolchain
-    - But calling causes errors that are likely issues of missing `patchelf`s (my guess) on the test binaries
+    - But calling causes errors that are likely issues calling `exec` on their [executable double](https://github.com/nextest-rs/nextest/blob/890f1fdf6f72799ef81238e14bf83898fa4e3a80/cargo-nextest/src/double_spawn.rs#L30), which bypasses `binfmt_misc`
+    - The name of the error is an entrypoint [when calling itself](https://github.com/nextest-rs/nextest/blob/890f1fdf6f72799ef81238e14bf83898fa4e3a80/nextest-runner/src/double_spawn.rs#L42-L43)
+    - TODO :soon:: Open an issue on https://github.com/nextest-rs/nextest/
 
 2. Most `qemu-static` emulation will succesfully produce binaries with the emulated toolchain
-    - Except for NixOS `qemu` emulation, that breaks the `cc` derivation for some reason...
+    - Except for NixOS `qemu` emulation, that can't link to the `rust-std` results
+    - It seems that the resulting `symbols.so` from `rustc` is partially broken [ref [#1](https://github.com/rust-lang/cargo/issues/8239?utm_source=pocket_saves) [#2](https://github.com/rust-lang/rust/pull/111351?utm_source=pocket_saves)]
+    - Using `rustc -C save-temps main.rs` allows inspecting of `symbols.so`, which reports the right arch under `file`, but fails to be parsed by `nm` or `objdump`.
+    - TODO :soon:: Open an isso on https://github.com/nix-community/fenix/
 
 ## Generating the project
 
