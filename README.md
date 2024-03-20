@@ -29,7 +29,7 @@ This error prevents using `cargo-nextest` with Github Actions, as it only offers
     - Except for NixOS `qemu` emulation, that can't link to the `rust-std` results
     - It seems that the resulting `symbols.so` from `rustc` is partially broken [ref [#1](https://github.com/rust-lang/cargo/issues/8239?utm_source=pocket_saves) [#2](https://github.com/rust-lang/rust/pull/111351?utm_source=pocket_saves)]
     - Using `rustc -C save-temps main.rs` allows inspecting of `symbols.so`, which reports the right arch under `file`, but fails to be parsed by `nm` or `objdump`.
-    - TODO :soon:: Open an isso on https://github.com/nixos/nixpkgs
+    - [ ] https://github.com/NixOS/nixpkgs/issues/297340
 
 ## Non Flake mode (simplest)
 
