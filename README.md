@@ -326,6 +326,27 @@ The error can be seen on [Github Actions](https://github.com/bltavares/banana/ac
 </details>
 
 
+<details>
+    <summary>strace execve</summary>
+
+```
+    [pid   818] execve("/proc/self/exe", ["/proc/self/exe", "__double-spawn", "--", "/workdir/target/debug/deps/quick"..., "--list --format terse"], 0xffffb47d3010 /* 98 vars */ <unfinished ...>
+[pid   819] +++ exited with 0 +++
+[pid   818] <... execve resumed>)       = 0
+strace: Process 822 attached
+[pid   822] +++ exited with 1 +++
+[pid   818] +++ exited with 1 +++
+[pid   797] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=818, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+[pid   820] execve("/proc/self/exe", ["/proc/self/exe", "__double-spawn", "--", "/workdir/target/debug/deps/quick"..., "--list --format terse --ignored"], 0xffffb47d2010 /* 98 vars */ <unfinished ...>
+[pid   821] +++ exited with 0 +++
+[pid   820] <... execve resumed>)       = 0
+strace: Process 823 attached
+[pid   823] +++ exited with 1 +++
+[pid   820] +++ exited with 1 +++
+[pid   810] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=820, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+```
+</details>
+
 ## References 
 
 So far, these are some links that helpmed me figure out the emulated toolchain process, but not cover all of the issues yet.
@@ -338,3 +359,7 @@ So far, these are some links that helpmed me figure out the emulated toolchain p
 - https://matklad.github.io//2022/03/14/rpath-or-why-lld-doesnt-work-on-nixos.html?utm_source=pocket_saves
 - https://github.com/pop-os/xdg-desktop-portal-cosmic/pull/10/files
 - https://github.com/mirkolenz/flocken?tab=readme-ov-file#flockenlegacypackagessystemmkdockermanifest
+
+- https://github.com/golang/go/issues/42080
+- https://gitlab.com/qemu-project/qemu/-/issues/1222
+- https://github.com/multiarch/qemu-user-static/issues/116
