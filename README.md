@@ -363,3 +363,5 @@ So far, these are some links that helpmed me figure out the emulated toolchain p
 - https://github.com/golang/go/issues/42080
 - https://gitlab.com/qemu-project/qemu/-/issues/1222
 - https://github.com/multiarch/qemu-user-static/issues/116
+- https://github.com/NixOS/nixpkgs/issues/160300
+- https://github.com/NixOS/nixpkgs/pull/160802
